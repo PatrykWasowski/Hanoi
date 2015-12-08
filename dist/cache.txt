@@ -1,0 +1,2 @@
+FindPiece	libFindPiece.so
+RedDiskDetection	libRedDiskDetection.so

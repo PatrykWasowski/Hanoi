@@ -1,0 +1,2 @@
+/home/pwasows1/discode_ws/DCL/Hanoi/dist/lib/libFindPiece.so
+/home/pwasows1/discode_ws/DCL/Hanoi/dist/lib/libRedDiskDetection.so

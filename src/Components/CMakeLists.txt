@@ -1,2 +1,6 @@
 # Add all components here using ADD_COMPONENT(<COMPONENT_DIRECTORY>)
 ADD_COMPONENT(FindPiece)
+
+ADD_COMPONENT(RedDiskDetection)
+
+ADD_COMPONENT(RodsDetection)
