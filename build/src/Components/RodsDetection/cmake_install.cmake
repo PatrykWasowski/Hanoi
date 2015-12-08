@@ -1,4 +1,4 @@
-# Install script for directory: /home/pwasows1/discode_ws/DCL/Hanoi/src/Components
+# Install script for directory: /home/pwasows1/discode_ws/DCL/Hanoi/src/Components/RodsDetection
 
 # Set the install prefix
 IF(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -32,11 +32,13 @@ IF(NOT DEFINED CMAKE_INSTALL_SO_NO_EXE)
   SET(CMAKE_INSTALL_SO_NO_EXE "1")
 ENDIF(NOT DEFINED CMAKE_INSTALL_SO_NO_EXE)
 
-IF(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  # Include the install script for each subdirectory.
-  INCLUDE("/home/pwasows1/discode_ws/DCL/Hanoi/build/src/Components/FindPiece/cmake_install.cmake")
-  INCLUDE("/home/pwasows1/discode_ws/DCL/Hanoi/build/src/Components/RedDiskDetection/cmake_install.cmake")
-  INCLUDE("/home/pwasows1/discode_ws/DCL/Hanoi/build/src/Components/RodsDetection/cmake_install.cmake")
-
-ENDIF(NOT CMAKE_INSTALL_LOCAL_ONLY)
+IF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "components")
+  FILE(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE SHARED_LIBRARY FILES "/home/pwasows1/discode_ws/DCL/Hanoi/build/src/Components/RodsDetection/libRodsDetection.so")
+  IF(EXISTS "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/libRodsDetection.so" AND
+     NOT IS_SYMLINK "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/libRodsDetection.so")
+    IF(CMAKE_INSTALL_DO_STRIP)
+      EXECUTE_PROCESS(COMMAND "/usr/bin/strip" "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/libRodsDetection.so")
+    ENDIF(CMAKE_INSTALL_DO_STRIP)
+  ENDIF()
+ENDIF(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "components")
 

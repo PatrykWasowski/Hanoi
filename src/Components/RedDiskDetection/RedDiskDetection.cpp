@@ -80,7 +80,6 @@ void RedDiskDetection::onNewImg() {
 
         cv::cvtColor(src, gray, CV_BGR2GRAY);
         cv::cvtColor(src, hsv, CV_BGR2HSV);
-        //std::vector<cv::Vec3f> circles;
         int min_h = 15, max_h = 17; // minimalna i maksymalna wartość składowej H w modelu HSV
 
         split(hsv, hsv_split);
@@ -90,36 +89,6 @@ void RedDiskDetection::onNewImg() {
         //cv::erode(thresh, thresh, cv::Mat());
 
 /*      Wykrywanie kółek średnio wychodzi, więc spróbuję wykrywać kontury i na tej podstawie wykryć, gdzie jest czerwony krążek
-
-        //src_gray: Input image (grayscale)
-        //circles: A vector that stores sets of 3 values: x_{c}, y_{c}, r for each detected circle.
-        //CV_HOUGH_GRADIENT: Define the detection method. Currently this is the only one available in OpenCV
-        //dp = 1: The inverse ratio of resolution
-        //min_dist = src_gray.rows/8: Minimum distance between detected centers
-        //param_1 = 200: Upper threshold for the internal Canny edge detector
-        //param_2 = 100*: Threshold for center detection.
-        //min_radius = 0: Minimum radio to be detected. If unknown, put zero as default.
-        //max_radius = 0: Maximum radius to be detected. If unknown, put zero as default
-
-        cv::HoughCircles(thresh, circles, CV_HOUGH_GRADIENT, 1, gray.rows/8, 200, 100, 20, 0);
-
-        for( size_t i = 0; i < circles.size(); i++ )
-          {
-              cv::Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
-              int radius = cvRound(circles[i][2]);
-              // circle center
-              circle(thresh, center, 3, cv::Scalar(0,255,0), -1, 8, 0 );
-              // circle outline
-              circle(thresh, center, radius, cv::Scalar(0,0,255), 3, 8, 0 );
-
-
-              //msg.data.push_back((float) (src_center.x - center.x)/5000.0);
-              //msg.data.push_back((float) (src_center.y - center.y)/3500.0);
-
-              //std::cout << "dx : " << (src_center.x - center.x)/5000.0 << std::endl;
-              //std::cout << "dy : " << (src_center.y - center.y)/3500.0 << std::endl;
-
-           }
 */
 
         img = src.clone();
@@ -147,7 +116,6 @@ void RedDiskDetection::onNewImg() {
             cv::rectangle( src, boundRect.tl(), boundRect.br(), cv::Scalar(125, 250, 125), 2, 8, 0 );
             cv::line( src, boundRect.tl(), boundRect.br(), cv::Scalar(250, 125, 125), 2, 8, 0);
             cv::line( src, cv::Point(boundRect.x + boundRect.width, boundRect.y), cv::Point(boundRect.x, boundRect.y + boundRect.height), cv::Scalar(250, 125, 125), 2, 8, 0);
-            //cv::putText( img, s, cv::Point(50, 50), CV_FONT_HERSHEY_COMPLEX, 1, cv::Scalar(20, 40, 80), 3, 8 );
             drawContours(thresh,  contours, i_cont, cv::Scalar(125, 125, 250), 2 );
 
             int row = (boundRect.tl().y + boundRect.br().y) / 2;
@@ -166,7 +134,7 @@ void RedDiskDetection::onNewImg() {
                        //thickness – Thickness of the circle outline, if positive. Negative thickness means that a filled circle is to be drawn.
                        //lineType – Type of the circle boundary. See the line() description.
                        //shift – Number of fractional bits in the coordinates of the center and in the radius value.
-        circle(src, src_center, 3, cv::Scalar(255, 255, 0), 3, 8, 0);
+        //circle(src, src_center, 3, cv::Scalar(255, 255, 0), 3, 8, 0);
 
         std::cout << src_center.x << " - src_center.x   " << p.x << " - p.x\n";
 

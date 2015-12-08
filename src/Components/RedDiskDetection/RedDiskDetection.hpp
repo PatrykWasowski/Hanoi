@@ -26,7 +26,7 @@ namespace RedDiskDetection {
  * \class RedDiskDetection
  * \brief RedDiskDetection processor class.
  *
- * Components detects red disk what is essential for finding out which rod is starting one.
+ * Component detects red disk what is essential for finding out which rod is starting one.
  */
 class RedDiskDetection: public Base::Component {
 public:

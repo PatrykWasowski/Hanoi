@@ -15,6 +15,8 @@
 
 #include <opencv2/opencv.hpp>
 
+#include "ros/ros.h"
+#include "std_msgs/String.h"
 
 namespace Processors {
 namespace RodsDetection {
@@ -74,6 +76,9 @@ protected:
 	Base::DataStreamOut<cv::Mat> out_img;
 
 	// Handlers
+    ros::Publisher pub;
+    ros::Subscriber sub;
+    ros::NodeHandle *nh, *nhs;
 
 	// Properties
 	Base::Property<std::string> ros_topic_name;

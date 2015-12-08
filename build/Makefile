@@ -285,6 +285,19 @@ RedDiskDetection/fast:
 	$(MAKE) -f src/Components/RedDiskDetection/CMakeFiles/RedDiskDetection.dir/build.make src/Components/RedDiskDetection/CMakeFiles/RedDiskDetection.dir/build
 .PHONY : RedDiskDetection/fast
 
+#=============================================================================
+# Target rules for targets named RodsDetection
+
+# Build rule for target.
+RodsDetection: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 RodsDetection
+.PHONY : RodsDetection
+
+# fast build rule for target.
+RodsDetection/fast:
+	$(MAKE) -f src/Components/RodsDetection/CMakeFiles/RodsDetection.dir/build.make src/Components/RodsDetection/CMakeFiles/RodsDetection.dir/build
+.PHONY : RodsDetection/fast
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -308,6 +321,7 @@ help:
 	@echo "... std_msgs_generate_messages_lisp"
 	@echo "... std_msgs_generate_messages_py"
 	@echo "... RedDiskDetection"
+	@echo "... RodsDetection"
 .PHONY : help
 
 
