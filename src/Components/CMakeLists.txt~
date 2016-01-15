@@ -5,3 +5,4 @@ ADD_COMPONENT(RedDiskDetection)
 
 ADD_COMPONENT(RodsDetection)
 
+ADD_COMPONENT(HSVConversion)

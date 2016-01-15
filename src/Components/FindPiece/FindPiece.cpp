@@ -85,7 +85,6 @@ void FindPiece::onNewImg() {
 
         std::vector<cv::Vec3f> circles;
 	
-
         cv::HoughCircles(gray, circles, CV_HOUGH_GRADIENT, 1, gray.rows/8, 200, 100, 0, 0);
 
         for( size_t i = 0; i < circles.size(); i++ )
@@ -108,9 +107,11 @@ void FindPiece::onNewImg() {
            
         circle(src, src_center, 3, cv::Scalar(255, 0 ,0), 3, 8, 0);
 
-        out_img.write(src);
+        out_img.write(gray);
         if(circles.size() == 0)
             msg.data.push_back(0.0);
+
+        std::cout << circles.size() << "\n";
 
     }
     else

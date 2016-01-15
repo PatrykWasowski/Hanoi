@@ -23,6 +23,13 @@ RedDiskDetection::RedDiskDetection(const std::string & name) :
 	registerProperty(ros_topic_name);
 	registerProperty(ros_namespace);
 
+    min_h = 7;
+    max_h = 10;
+
+    min_y = 230;
+    max_y = 830;
+
+    min_area = 200;
 }
 
 RedDiskDetection::~RedDiskDetection() {
@@ -80,7 +87,6 @@ void RedDiskDetection::onNewImg() {
 
         cv::cvtColor(src, gray, CV_BGR2GRAY);
         cv::cvtColor(src, hsv, CV_BGR2HSV);
-        int min_h = 15, max_h = 17; // minimalna i maksymalna wartość składowej H w modelu HSV
 
         split(hsv, hsv_split);
 
@@ -99,13 +105,19 @@ void RedDiskDetection::onNewImg() {
         thresh.copyTo(cont);
         cv::findContours( cont, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, cv::Point(0, 0) );
         int max = 0, i_cont = -1;
-        //cv::Mat drawing = cv::Mat::zeros( cont.size(), CV_8UC3 );
+
         for( int i = 0; i< contours.size(); i++ )
         {
             if ( abs(cv::contourArea(cv::Mat(contours[i]))) > max )
             {
-                  max = abs(cv::contourArea(cv::Mat(contours[i])));
-                  i_cont = i;
+                cv::approxPolyDP( cv::Mat(contours[i]), contours_poly, 3, true );
+                boundRect = cv::boundingRect( cv::Mat(contours_poly) );
+                int row = (boundRect.tl().y + boundRect.br().y) / 2;
+                if(row > min_y && row < max_y)
+                {
+                    max = abs(cv::contourArea(cv::Mat(contours[i])));
+                    i_cont = i;
+                }
              }
         }
         if ( i_cont >= 0 )
@@ -134,7 +146,7 @@ void RedDiskDetection::onNewImg() {
                        //thickness – Thickness of the circle outline, if positive. Negative thickness means that a filled circle is to be drawn.
                        //lineType – Type of the circle boundary. See the line() description.
                        //shift – Number of fractional bits in the coordinates of the center and in the radius value.
-        //circle(src, src_center, 3, cv::Scalar(255, 255, 0), 3, 8, 0);
+        circle(src, src_center, 3, cv::Scalar(255, 255, 0), 3, 8, 0);
 
         std::cout << src_center.x << " - src_center.x   " << p.x << " - p.x\n";
 

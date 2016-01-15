@@ -85,6 +85,13 @@ protected:
 	Base::Property<std::string> ros_topic_name;
 	Base::Property<std::string> ros_namespace;
 
+    int min_h;  // minimalna i maksymalna wartość składowej H w modelu HSV
+    int max_h;
+
+    int min_y;  // krancowe wartosci skladowej y srodkow konturow
+    int max_y;  // pozwalaja odrzucic obiekty wykryte na krawedzi obrazu
+
+    int min_area;
 	
 	// Handlers
 	void onNewImg();
