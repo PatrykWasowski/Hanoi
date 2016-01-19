@@ -37,6 +37,8 @@ ros/ros.h
 /home/pwasows1/discode_ws/DCL/Hanoi/src/Components/RodsDetection/ros/ros.h
 std_msgs/String.h
 /home/pwasows1/discode_ws/DCL/Hanoi/src/Components/RodsDetection/std_msgs/String.h
+std_msgs/Float32MultiArray.h
+/home/pwasows1/discode_ws/DCL/Hanoi/src/Components/RodsDetection/std_msgs/Float32MultiArray.h
 
 /home/pwasows1/discode_ws/DisCODe/build/inst/include/Base/Component.hpp
 map

@@ -31,6 +31,9 @@ RodsDetection::RodsDetection(const std::string & name) :
     max_y = 830;
 
     min_area = 200;
+
+    px_cm_x = 40;
+    px_cm_y = 40;
 }
 
 RodsDetection::~RodsDetection() {
@@ -62,7 +65,7 @@ bool RodsDetection::onInit() {
     nh = new ros::NodeHandle;
     nhs = new ros::NodeHandle;
     sub = nh->subscribe("wanted_rod", 1, callback);
-    //pub = nh->advertise<std_msgs::Int16>(ros_topic_name, 1000); // drugi argument to wielkość kolejki
+    pub = nhs->advertise<std_msgs::Float32MultiArray>(ros_topic_name, 1000); // drugi argument to wielkość kolejki
 
 	return true;
 }
@@ -85,6 +88,8 @@ void RodsDetection::onNewImg() {
         cv::Mat src, gray, hsv, thresh, img;
         std::vector<cv::Mat> hsv_split;
         cv::Point p;
+
+        std_msgs::Float32MultiArray ret_msg;    // wiadomosc do skryptu Python zawierajaca odleglosc punktu pod chwytakiem do zadanego slupka
 
         src = in_img.read().clone();
         int rows_poprawka = 350;
@@ -159,7 +164,7 @@ void RodsDetection::onNewImg() {
 
         for(int i = 0; i < 3; ++i)
         {
-            if(area > 0)
+            if(rods[i].area > 0)
             {
                 cv::fillConvexPoly(img, contours_poly, contours_poly.size() );
                 cv::rectangle( src, rods[i].rect.tl(), rods[i].rect.br(), cv::Scalar(125, 250, 125), 2, 8, 0 );
@@ -178,7 +183,9 @@ void RodsDetection::onNewImg() {
 
         }
 
-        int wanted_x, wanted_y;     // wartosci x i y zadanego slupka, ktore beda wyslane do topicu
+        float wanted_x, wanted_y;     // wartosci x i y zadanego slupka, ktore beda wyslane do topicu
+
+        // wysylanie info, w jakiej odleglosci od punktu pod chwytakiem jest zadany slupek
 
         switch(wanted_rod)
         {
@@ -248,10 +255,22 @@ void RodsDetection::onNewImg() {
 
         circle(src, src_center, 3, cv::Scalar(255, 255, 0), 3, 8, 0);
 
+        wanted_x -= src_center[0];  // otrzymujemy pozycje wzgledem punktu pod chwytakiem
+        wanted_y -= src_center[1];
+
+        wanted_x /= px_cm_x;    // zwroci odleglosc w cm, nie pikselach
+        wanted_y /= px_cm_y;
+
+        wanted_x /= 100;    // trzeba wyrazic odleglosc w m dla irpos.move
+        wanted_y /= 100;
+
+        ret_msg.data[0] = wanted_x;
+        ret_msg.data[1] = wanted_y;
+        pub.publish(ret_msg);
+
         out_img.write(src);
         
     }
-
 
 }
 

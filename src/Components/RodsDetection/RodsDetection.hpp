@@ -17,6 +17,7 @@
 
 #include "ros/ros.h"
 #include "std_msgs/String.h"
+#include "std_msgs/Float32MultiArray.h"
 
 namespace Processors {
 namespace RodsDetection {
@@ -103,6 +104,9 @@ protected:
     int max_y;  // pozwalaja odrzucic obiekty wykryte na krawedzi obrazu
 
     int min_area;
+
+    int px_cm_x;    // ile px/cm wypada w osi x i y
+    int px_cm_y;
 	
 	// Handlers
 	void onNewImg();
