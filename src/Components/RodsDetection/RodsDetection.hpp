@@ -104,6 +104,7 @@ protected:
     int max_y;  // pozwalaja odrzucic obiekty wykryte na krawedzi obrazu
 
     int min_area;
+    int max_area;
 
     int px_cm_x;    // ile px/cm wypada w osi x i y
     int px_cm_y;

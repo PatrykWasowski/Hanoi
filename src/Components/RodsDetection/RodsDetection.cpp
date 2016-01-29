@@ -20,20 +20,23 @@ int wanted_rod = -1;
 RodsDetection::RodsDetection(const std::string & name) :
 		Base::Component(name) , 
         ros_topic_name("ros.topic_name", std::string("rods")),
-        ros_namespace("ros.namespace", std::string("discode")) {
+        ros_namespace("ros.namespace", std::string("IRpOS")) {
 	registerProperty(ros_topic_name);
 	registerProperty(ros_namespace);
 
     min_h = 7;
     max_h = 12;
 
-    min_y = 230;
-    max_y = 830;
+    min_y = 350;
+    max_y = 1000;
 
-    min_area = 200;
+    min_area = 150;
+    max_area = 3000;
 
-    px_cm_x = 40;
-    px_cm_y = 40;
+    px_cm_x = 50;
+    px_cm_y = 60;
+
+    wanted_rod = -1;
 }
 
 RodsDetection::~RodsDetection() {
@@ -52,10 +55,12 @@ void RodsDetection::prepareInterface() {
 void callback(const std_msgs::String& str){
     if(str.data == "LEFT")
         wanted_rod = 0;
-    else if(str.data == "RIGHT")
+    else if(str.data == "CENTER")
         wanted_rod = 1;
     else
         wanted_rod = 2;
+        
+    std::cout << "\n\n\n\nOdebralem zadanie\n\n\n\n\n\n";
 }
 
 bool RodsDetection::onInit() {
@@ -66,6 +71,8 @@ bool RodsDetection::onInit() {
     nhs = new ros::NodeHandle;
     sub = nh->subscribe("wanted_rod", 1, callback);
     pub = nhs->advertise<std_msgs::Float32MultiArray>(ros_topic_name, 1000); // drugi argument to wielkość kolejki
+
+	ros::spinOnce();
 
 	return true;
 }
@@ -83,17 +90,21 @@ bool RodsDetection::onStart() {
 }
 
 void RodsDetection::onNewImg() {
+    ros::spinOnce();
+    
     if(!in_img.empty())
     {
-        cv::Mat src, gray, hsv, thresh, img;
+        //std::cout << '[RODS_DETECTION]' << "\n";
+        
+		cv::Mat src, gray, hsv, thresh, img;
         std::vector<cv::Mat> hsv_split;
         cv::Point p;
 
         std_msgs::Float32MultiArray ret_msg;    // wiadomosc do skryptu Python zawierajaca odleglosc punktu pod chwytakiem do zadanego slupka
 
         src = in_img.read().clone();
-        int rows_poprawka = 350;
-        int cols_poprawka = -44;
+        int rows_poprawka = 380;
+        int cols_poprawka = -85;
 
         int rows = src.rows / 2 + rows_poprawka;
         int cols = src.cols / 2 + cols_poprawka;
@@ -132,7 +143,7 @@ void RodsDetection::onNewImg() {
              // jest gdzies na dolnej lub gornej krawedzi widzianego obrazu
              // to jest to pomaranczowa blacha obramowujaca tasme, wiec mozna ten wykryty kontur olac dajac mu powierzchnie 0
 
-             if(areas[i].area > min_area)
+             if(areas[i].area > min_area && areas[i].area < max_area)
              {
                  cv::approxPolyDP( cv::Mat(areas[i].cont), contours_poly, 3, true );
                  boundRect = cv::boundingRect( cv::Mat(contours_poly) );
@@ -146,20 +157,31 @@ void RodsDetection::onNewImg() {
                     areas[i].area = 0;
         }
         
-        std::cout << contours.size() << "\n";
+        //std::cout << contours.size() << "\n";
         
-
+        int znalezione = 0;
         sort(areas, areas + contours.size());
-        for(int i = 0; i < contours.size(); ++i)
-            std::cout << areas[i].area << "\n";
+        for(int i = 0; i < 4; ++i)
+        {
+            //std::cout << areas[i].area << "\n";
+            if(areas[i].area > 0)
+                ++znalezione;
+        }
 
+        //std::cout<<"Flag-1\n";
         int max_col = -1;
-        int min_col = -1;
+        int min_col = 1000;
         int found = 0;  // ile znaleziono slupkow
 
+        //std::cout << "Znaleziono  " << znalezione << "\n";
         contour rods[3];
         for(int i = 0; i < 3; ++i)
-            rods[i] = areas[i+1];
+        {
+            if(znalezione == 4)
+                rods[i] = areas[i+1];
+            else rods[i] = areas[i];
+            //std::cout << "Rod[" << i <<"]=" << rods[i].area;
+        }
 
 
         for(int i = 0; i < 3; ++i)
@@ -183,9 +205,11 @@ void RodsDetection::onNewImg() {
 
         }
 
-        float wanted_x, wanted_y;     // wartosci x i y zadanego slupka, ktore beda wyslane do topicu
+        float wanted_x = -3000, wanted_y = -3000;     // wartosci x i y zadanego slupka, ktore beda wyslane do topicu
 
         // wysylanie info, w jakiej odleglosci od punktu pod chwytakiem jest zadany slupek
+
+        //std::cout << "Flag0\n";
 
         switch(wanted_rod)
         {
@@ -196,11 +220,13 @@ void RodsDetection::onNewImg() {
                         int col = (rods[i].rect.tl().x + rods[i].rect.br().x) / 2;
                         int row = (rods[i].rect.tl().y + rods[i].rect.br().y) / 2;
 
-                        if(col < min_col)
+                        if(rods[i].area && col < min_col)
                         {
                             min_col = col;
                             wanted_x = col;
                             wanted_y = row;
+							if(rods[i].area > 1000)
+									wanted_y += 20;	// jesli wykryty jest czerwony krazek, to punkt, w ktorym trzeba zlapac jest troche nizej
                         }
                     }
             break;
@@ -220,16 +246,21 @@ void RodsDetection::onNewImg() {
                                max_col = col;
                        }
                        // wybor slupka, ktory nie jest w zadnym ekstremum skladowej x
+                       
+                       std::cout << "min-max col: " << min_col << " - " << max_col << "\n";
                        for(int i = 0; i < 3; ++i)
                        {
                            int col = (rods[i].rect.tl().x + rods[i].rect.br().x) / 2;
                            int row = (rods[i].rect.tl().y + rods[i].rect.br().y) / 2;
-
+						   std::cout << "col[" << i << "]: " << col << "\n"; 
                            if(col < max_col && col > min_col)
                            {
                                wanted_x = col;
                                wanted_y = row;
+							   if(rods[i].area > 1000)
+									wanted_y += 20;	// jesli wykryty jest czerwony krazek, to punkt, w ktorym trzeba zlapac jest troche nizej
                            }
+                           
                        }
                    }
               break;
@@ -240,11 +271,13 @@ void RodsDetection::onNewImg() {
                         int col = (rods[i].rect.tl().x + rods[i].rect.br().x) / 2;
                         int row = (rods[i].rect.tl().y + rods[i].rect.br().y) / 2;
 
-                        if(col > max_col)
+                        if(rods[i].area && col > max_col)
                         {
                             max_col = col;
                             wanted_x = col;
                             wanted_y = row;
+                            if(rods[i].area > 1000)
+									wanted_y += 20;	// jesli wykryty jest czerwony krazek, to punkt, w ktorym trzeba zlapac jest troche nizej
                         }
                     }
               break;
@@ -255,19 +288,27 @@ void RodsDetection::onNewImg() {
 
         circle(src, src_center, 3, cv::Scalar(255, 255, 0), 3, 8, 0);
 
-        wanted_x -= src_center[0];  // otrzymujemy pozycje wzgledem punktu pod chwytakiem
-        wanted_y -= src_center[1];
+        //std::cout << "Flag1\n";
+        if(wanted_rod > -1 && wanted_x != -3000)
+        {	
+			std::cout << "wanted_rod: " << wanted_x << " - " << wanted_y << "\n";
+			std::cout << "src_center: " << src_center.x << " - " << src_center.y << "\n";
+            wanted_x -= src_center.x;  // otrzymujemy pozycje wzgledem punktu pod chwytakiem
+            wanted_y -= src_center.y;
 
-        wanted_x /= px_cm_x;    // zwroci odleglosc w cm, nie pikselach
-        wanted_y /= px_cm_y;
+			std::cout << "wanted_rod - src: " << wanted_x << " - " << wanted_y << "\n";
 
-        wanted_x /= 100;    // trzeba wyrazic odleglosc w m dla irpos.move
-        wanted_y /= 100;
+            wanted_x /= px_cm_x;    // zwroci odleglosc w cm, nie pikselach
+            wanted_y /= px_cm_y;
 
-        ret_msg.data[0] = wanted_x;
-        ret_msg.data[1] = wanted_y;
-        pub.publish(ret_msg);
+            wanted_x /= 100;    // trzeba wyrazic odleglosc w m dla irpos.move
+            wanted_y /= 100;
 
+            ret_msg.data.push_back(wanted_x);
+            ret_msg.data.push_back(wanted_y);
+            pub.publish(ret_msg);
+            std::cout << "msg: " << ret_msg.data[0] << " " << ret_msg.data[1] << "\n";
+       }
         out_img.write(src);
         
     }

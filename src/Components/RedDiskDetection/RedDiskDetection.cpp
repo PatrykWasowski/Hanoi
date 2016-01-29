@@ -158,6 +158,8 @@ void RedDiskDetection::onNewImg() {
 
         pub.publish(msg);
 
+
+
         out_img.write(src);
     }
 }
