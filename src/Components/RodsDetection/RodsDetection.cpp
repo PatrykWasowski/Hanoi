@@ -27,7 +27,7 @@ RodsDetection::RodsDetection(const std::string & name) :
     min_h = 7;
     max_h = 12;
 
-    min_y = 350;
+    min_y = 550;
     max_y = 1000;
 
     min_area = 150;
@@ -103,8 +103,8 @@ void RodsDetection::onNewImg() {
         std_msgs::Float32MultiArray ret_msg;    // wiadomosc do skryptu Python zawierajaca odleglosc punktu pod chwytakiem do zadanego slupka
 
         src = in_img.read().clone();
-        int rows_poprawka = 380;
-        int cols_poprawka = -85;
+        int rows_poprawka = 370;
+        int cols_poprawka = -75;
 
         int rows = src.rows / 2 + rows_poprawka;
         int cols = src.cols / 2 + cols_poprawka;
