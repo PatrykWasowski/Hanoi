@@ -23,8 +23,8 @@ RedDiskDetection::RedDiskDetection(const std::string & name) :
 	registerProperty(ros_topic_name);
 	registerProperty(ros_namespace);
 
-    min_h = 7;
-    max_h = 10;
+    min_h = 4;
+    max_h = 7;
 
     min_y = 230;
     max_y = 830;
@@ -157,8 +157,6 @@ void RedDiskDetection::onNewImg() {
         msg.data = roznica;
 
         pub.publish(msg);
-
-
 
         out_img.write(src);
     }

@@ -1,0 +1,90 @@
+
+<Task>
+	<!-- reference task information -->
+	<Reference>
+		<Author>
+			<name>Patryk Wąsowski</name>
+			<link></link>
+		</Author>
+		
+		<Description>
+			<brief>Providing info about rods and red disk position for hanoi:irp6_hanoi script</brief>
+			<full></full>	
+		</Description>
+	</Reference>
+	
+	<!-- task definition -->
+	<Subtasks>
+		<Subtask name="Processing">
+			<Executor name="Exec1" period="0.5">
+				
+				<Component name="Source" type="CameraPGR:CameraPGR" priority="1" bump="0">
+					<param name="camera_serial">13481977</param>
+					<param name="width">1296</param>
+					<param name="height">1032</param>
+					<param name="shutter_mode">manual</param>
+					<param name="shutter_value">400</param>
+					<param name="gain_mode">manual</param>
+					<param name="gain_value">10</param>
+					<param name="frame_rate_value">2</param>
+					<param name="frame_rate_mode">manual</param>
+					<param name="brightness_value">9</param>
+				</Component>
+				
+				<Component name="CameraInfo" type="CvCoreTypes:CameraInfoProvider" priority="2">
+					<param name="width">1296</param>
+					<param name="height">1032</param>
+					<param name="camera_matrix">1052.243505 0.000000 654.993030 ; 0.000000 1042.403222 480.578321 ; 0 0 1</param>
+					<param name="dist_coeffs">-0.397593 0.132266 0.003070 -0.000948 0.000000</param>
+				</Component>
+				
+				<Component name="Undistort" type="CvBasic:CvUndistort" priority="3" bump="0">
+				</Component>
+
+				<Component name="Rods" type="Hanoi:RodsDetection" priority="4">
+				</Component>
+				
+				<Component name="RedDisk" type="Hanoi:RedDiskDetection" priority="5">
+				</Component>
+
+			</Executor>
+		</Subtask>
+		
+		<Subtask name="Visualisation">
+			<Executor name="Exec2" period="0.5">
+				<Component name="Window" type="CvBasic:CvWindow" priority="4" bump="0">
+					<param name="count">2</param>
+					<param name="title">Original,Result</param>
+				</Component>
+			</Executor>
+		</Subtask>	
+		
+		<Subtask>
+
+		</Subtask>
+	
+	</Subtasks>
+	
+	<!-- pipes connecting datastreams -->
+	<DataStreams>
+		<Source name="Source.out_img">	
+			<sink>Undistort.in_img</sink>			
+		</Source>
+		<Source name="CameraInfo.out_camera_info">
+			<sink>Undistort.in_camera_info</sink>
+		</Source>
+		<Source name="Undistort.out_img">
+			<sink>Rods.in_img</sink>
+			<sink>RedDisk.in_img</sink>
+			<sink>Window.in_img0</sink>
+		</Source>
+		<Source name="Rods.out_img">
+			<sink>Window.in_img1</sink>
+		</Source>
+		
+	</DataStreams>
+</Task>
+
+
+
+
