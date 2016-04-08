@@ -41,10 +41,10 @@
 				<Component name="Undistort" type="CvBasic:CvUndistort" priority="3" bump="0">
 				</Component>
 
-				<Component name="Rods" type="Hanoi:RodsDetection" priority="4">
+				<Component name="Rods" type="Hanoi:RodsDetection" priority="5">
 				</Component>
 				
-				<Component name="RedDisk" type="Hanoi:RedDiskDetection" priority="5">
+				<Component name="RedDisk" type="Hanoi:RedDiskDetection" priority="4">
 				</Component>
 
 			</Executor>

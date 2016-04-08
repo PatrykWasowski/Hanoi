@@ -23,8 +23,8 @@ RedDiskDetection::RedDiskDetection(const std::string & name) :
 	registerProperty(ros_topic_name);
 	registerProperty(ros_namespace);
 
-    min_h = 4;
-    max_h = 7;
+    min_h = 4; // 3
+    max_h = 7; // 4
 
     min_y = 230;
     max_y = 830;

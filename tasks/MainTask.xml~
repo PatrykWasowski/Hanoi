@@ -41,7 +41,7 @@
 				<Component name="Undistort" type="CvBasic:CvUndistort" priority="3" bump="0">
 				</Component>
 
-				<Component name="Rods" type="Hanoi:RodsDetection" priority="4">
+				<Component name="Rods" type="Hanoi:RodsDetection" priority="1">
 				</Component>
 				
 				<Component name="RedDisk" type="Hanoi:RedDiskDetection" priority="5">
@@ -78,7 +78,7 @@
 			<sink>RedDisk.in_img</sink>
 			<sink>Window.in_img0</sink>
 		</Source>
-		<Source name="RedDisk.out_img">
+		<Source name="Rods.out_img">
 			<sink>Window.in_img1</sink>
 		</Source>
 		

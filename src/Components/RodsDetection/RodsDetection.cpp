@@ -24,14 +24,14 @@ RodsDetection::RodsDetection(const std::string & name) :
 	registerProperty(ros_topic_name);
 	registerProperty(ros_namespace);
 
-    min_h = 6;
-    max_h = 9;
+    min_h = 5; // 1
+    max_h = 8; // 4
 
     min_y = 350;
-    max_y = 920;
+    max_y = 1000;
 
     min_area = 600;
-    max_area = 3200;
+    max_area = 3600;
 
     px_cm_x = 50;
     px_cm_y = 60;
