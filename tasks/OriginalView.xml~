@@ -8,7 +8,7 @@
 		</Author>
 		
 		<Description>
-			<brief>Providing info about rods and red disk position for hanoi:irp6_hanoi script</brief>
+			<brief>Task showing difference between original and undistorted view in frequency of 25 FPS</brief>
 			<full></full>	
 		</Description>
 	</Reference>
@@ -16,17 +16,17 @@
 	<!-- task definition -->
 	<Subtasks>
 		<Subtask name="Processing">
-			<Executor name="Exec1" period="0.07">
+			<Executor name="Exec1" period="0.1">
 				
 				<Component name="Source" type="CameraPGR:CameraPGR" priority="1" bump="0">
 					<param name="camera_serial">13481977</param>
 					<param name="width">1296</param>
 					<param name="height">1032</param>
 					<param name="shutter_mode">manual</param>
-					<param name="shutter_value">35</param>
+					<param name="shutter_value">75</param>
 					<param name="gain_mode">manual</param>
 					<param name="gain_value">19</param>
-					<param name="frame_rate_value">14</param>
+					<param name="frame_rate_value">10</param>
 					<param name="frame_rate_mode">manual</param>
 					<param name="brightness_value">4</param>
 				</Component>
@@ -41,21 +41,20 @@
 				<Component name="Undistort" type="CvBasic:CvUndistort" priority="3" bump="0">
 				</Component>
 
-				<Component name="Rods" type="Hanoi:RodsDetection" priority="4" bump="0">
-				</Component>
-				
-				<Component name="RedDisk" type="Hanoi:RedDiskDetection" priority="5">
-				</Component>
 			</Executor>
 		</Subtask>
 		
 		<Subtask name="Visualisation">
-			<Executor name="Exec2" period="0.07">
+			<Executor name="Exec2" period="0.1">
 				<Component name="Window" type="CvBasic:CvWindow" priority="4" bump="0">
-					<param name="count">4</param>
-					<param name="title">RodsDetection,RedDiskDetection,Original,Result</param>
+					<param name="count">2</param>
+					<param name="title">Original,Undistort</param>
 				</Component>
 			</Executor>
+		</Subtask>	
+		
+		<Subtask>
+
 		</Subtask>
 	
 	</Subtasks>
@@ -63,26 +62,15 @@
 	<!-- pipes connecting datastreams -->
 	<DataStreams>
 		<Source name="Source.out_img">	
-			<sink>Undistort.in_img</sink>	
-			<sink>Window.in_img2</sink>		
+			<sink>Undistort.in_img</sink>
+			<sink>Window.in_img1</sink>		
 		</Source>
 		<Source name="CameraInfo.out_camera_info">
 			<sink>Undistort.in_camera_info</sink>
 		</Source>
 		<Source name="Undistort.out_img">
-			<sink>Rods.in_img</sink>
-			<sink>RedDisk.in_img</sink>
-			<sink>Window.in_img3</sink>
-		</Source>
-		<Source name="Rods.out_img">
 			<sink>Window.in_img0</sink>
-		</Source>
-		<Source name="RedDisk.out_img">
-			<sink>Window.in_img1</sink>
 		</Source>
 	</DataStreams>
 </Task>
-
-
-
 

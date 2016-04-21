@@ -146,7 +146,7 @@ void RedDiskDetection::onNewImg() {
                        //thickness – Thickness of the circle outline, if positive. Negative thickness means that a filled circle is to be drawn.
                        //lineType – Type of the circle boundary. See the line() description.
                        //shift – Number of fractional bits in the coordinates of the center and in the radius value.
-        circle(src, src_center, 3, cv::Scalar(255, 255, 0), 3, 8, 0);
+        //circle(src, src_center, 3, cv::Scalar(255, 255, 0), 3, 8, 0);
 
         std::cout << src_center.x << " - src_center.x   " << p.x << " - p.x\n";
 
