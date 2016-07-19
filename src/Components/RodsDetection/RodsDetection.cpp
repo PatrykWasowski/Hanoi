@@ -24,14 +24,14 @@ RodsDetection::RodsDetection(const std::string & name) :
 	registerProperty(ros_topic_name);
 	registerProperty(ros_namespace);
 
-    min_h = 5; // 1
-    max_h = 7; // 4
+    min_h = 4; // 1
+    max_h = 9; // 4
 
     min_y = 350;
     max_y = 1000;
 
     min_area = 600;
-    max_area = 3600;
+    max_area = 4000;
 
     px_cm_x = 50;
     px_cm_y = 60;
@@ -193,7 +193,7 @@ void RodsDetection::onNewImg() {
 
 		delete[] areas; 	
 
-        //circle(src, src_center, 3, cv::Scalar(255, 255, 0), 3, 8, 0);
+        circle(src, src_center, 3, cv::Scalar(255, 255, 0), 3, 8, 0);
 
 		ret_msg.data.push_back(src_center.y);
 		ret_msg.data.push_back(src_center.x);

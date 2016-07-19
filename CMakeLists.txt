@@ -32,6 +32,7 @@ function (USE_ROS)
             message(STATUS "${loop_var}")
             FIND_PACKAGE(${loop_var})
             set(INT_ROS_LIBRARIES ${INT_ROS_LIBRARIES} ${${loop_var}_LIBRARIES})
+            include_directories(${${loop_var}_INCLUDE_DIRS})
         endforeach()
     endif()
 
